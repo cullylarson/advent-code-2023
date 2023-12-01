@@ -1,0 +1,25 @@
+{
+  "name": "advent-code-2023",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "lint": "esw --watch --color .",
+    "test": "node --experimental-vm-modules $(npm bin)/jest ./day-01",
+    "test:days": "node --experimental-vm-modules $(npm bin)/jest ./test/days.test.js"
+  },
+  "author": "Cully Larson",
+  "dependencies": {
+    "@cullylarson/f": "^0.1.2",
+    "@cullylarson/p": "^0.1.1",
+    "eslint": "^8.54.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "eslint-watch": "^8.0.0",
+    "jest": "^29.7.0",
+    "standard": "^17.1.0"
+  },
+  "devDependencies": {
+    "jest-in-case": "^1.0.2"
+  }
+}
