@@ -9,7 +9,7 @@ const parts = {
   },
   'day 1, part 2': {
     part: 'day-01/part-2.js',
-    answer: 'TODO',
+    answer: '54649',
   },
 }
 

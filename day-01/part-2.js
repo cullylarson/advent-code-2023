@@ -1,52 +1,49 @@
-import {compose, report, map, filter, toInt, split, curry} from '@cullylarson/f'
+import {compose, report, map} from '@cullylarson/f'
 import {then} from '@cullylarson/p'
-import {readInput, toFirstLast, arrToNumber} from './lib.js'
+import {readInput, arrToNumber} from './lib.js'
 import {rel, sum} from '../lib.js'
 
-const indexOfStr = (search, subject) => subject.indexOf(search)
+const indexOfStr = (where, search, subject) => where === 'first' ? subject.indexOf(search) : subject.lastIndexOf(search)
 
 // get the index of the value found by comparing all values
 const indexOfComparision = (compare, xs) => {
-  let least
+  let value
 
   for(let i = 0; i < xs.length; i++) {
     const x = xs[i]
 
-    if(x !== undefined && (least === undefined || compare(x, least.value))) {
-      least = {index: i, value: x}
+    if(x !== undefined && (value === undefined || compare(x, value.value))) {
+      value = {index: i, value: x}
     }
   }
 
-  return least === undefined ? undefined : least.index
+  return value === undefined ? undefined : value.index
 }
 
-const replaceOccurrence = (where, search, replace, subject) => {
-  const index = where === 'last' ? subject.lastIndexOf(search) : subject.indexOf(search)
-
-  if(index === -1) {
-    return subject
-  }
-
-  return subject.substring(0, index)
-    + replace
-    + subject.substring(index + search.length)
-}
-
-const replaceNumberStrings = curry((where, subject) => {
+const findNumber = (where, subject) => {
   const numberStrings = [
     ['one', 1],
+    ['1', 1],
     ['two', 2],
+    ['2', 2],
     ['three', 3],
+    ['3', 3],
     ['four', 4],
+    ['4', 4],
     ['five', 5],
+    ['5', 5],
     ['six', 6],
+    ['6', 6],
     ['seven', 7],
+    ['7', 7],
     ['eight', 8],
+    ['8', 8],
     ['nine', 9],
+    ['9', 9],
   ]
 
   const indexOfNumbers = numberStrings
-    .map(x => indexOfStr(x[0], subject))
+    .map(x => indexOfStr(where, x[0], subject))
     .map(x => x === -1 ? undefined : x)
 
   const indexOfNumber = where === 'first'
@@ -54,25 +51,18 @@ const replaceNumberStrings = curry((where, subject) => {
     : indexOfComparision((index, currentGreatest) => index > currentGreatest, indexOfNumbers)
 
   if(indexOfNumber === undefined) {
-    return subject
+    throw Error('Could not find a number in subject: ', subject)
   }
 
-  const numberToReplace = numberStrings[indexOfNumber]
-
-  return replaceOccurrence(where, numberToReplace[0], numberToReplace[1], subject)
-})
+  return numberStrings[indexOfNumber][1]
+}
 
 then(compose(
   report,
   sum,
   map(arrToNumber),
-  report,
-  map(toFirstLast),
-  map(filter(x => x !== undefined)),
-  map(map(toInt(undefined))),
-  map(split('')),
-  report,
-  map(replaceNumberStrings('last')),
-  map(replaceNumberStrings('first')),
-  report,
-), readInput(rel(import.meta.url, 'sample-part-2.txt')))
+  map(x => [
+    findNumber('first', x),
+    findNumber('last', x),
+  ]),
+), readInput(rel(import.meta.url, 'input.txt')))
