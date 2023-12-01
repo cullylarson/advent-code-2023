@@ -5,7 +5,7 @@ const parts = {
   'day 1, part 1':
   {
     part: 'day-01/part-1.js',
-    answer: 'TODO',
+    answer: '54081',
   },
   'day 1, part 2': {
     part: 'day-01/part-2.js',
