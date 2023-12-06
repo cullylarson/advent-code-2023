@@ -4,7 +4,19 @@ import {readInput} from './lib.js'
 import {rel, min} from '../lib.js'
 
 const applyMap = curry((map, key) => {
-  return map[key] === undefined ? key : map[key]
+  const nextKey = map.reduce((acc, x) => {
+    if(acc !== undefined) {
+      return acc
+    }
+    else if(x.source.start <= key && x.source.end >= key) {
+      return x.destStart + key - x.source.start
+    }
+    else {
+      return undefined
+    }
+  }, undefined)
+
+  return nextKey === undefined ? key : nextKey
 })
 
 const applyMaps = ({seeds, ...maps}) => {

@@ -1,4 +1,4 @@
-import {compose, trim, split, map, get, tail, reduce, toInt} from '@cullylarson/f'
+import {compose, trim, split, map, get, tail, toInt} from '@cullylarson/f'
 import {then} from '@cullylarson/p'
 import {readFile} from '../lib.js'
 
@@ -13,19 +13,16 @@ const parseSeeds = compose(
 const parseMapLine = mapLineStr => {
   const [destStart, sourceStart, length] = mapLineStr.split(' ').map(toInt(undefined))
 
-  const result = {}
-
-  for(let i = 0; i < length; i++) {
-    result[sourceStart + i] = destStart + i
+  return {
+    source: {
+      start: sourceStart,
+      end: sourceStart + length - 1,
+    },
+    destStart,
   }
-
-  return result
 }
 
-const parseMap = reduce((acc, x) => ({
-  ...acc,
-  ...parseMapLine(x),
-}), {})
+const parseMap = map(parseMapLine)
 
 const getMapKey = compose(
   get(0, undefined),
