@@ -4,19 +4,24 @@ import {readInput} from './lib.js'
 import {rel} from '../lib.js'
 
 const seedListToRanges = xs => {
+  let totalLength = 0 // stub
   const ranges = []
 
   for(let i = 0; i < xs.length; i += 2) {
     ranges.push({
       start: xs[i],
-      end: xs[i] + xs[i + 1] - 1,
+      length: xs[i + 1],
     })
+
+    totalLength += xs[i + 1] // stub
   }
+
+  console.log(totalLength) // stub
 
   return ranges
 }
 
-const applyMapReverse = curry((map, key) => {
+const applyMap = curry((map, key) => {
   if(key === undefined) {
     return undefined
   }
@@ -25,8 +30,8 @@ const applyMapReverse = curry((map, key) => {
     if(acc !== undefined) {
       return acc
     }
-    else if(x.dest.start <= key && x.dest.end >= key) {
-      return x.source.start + key - x.dest.start
+    else if(x.source.start <= key && x.source.end >= key) {
+      return x.dest.start + key - x.source.start
     }
     else {
       return undefined
@@ -36,36 +41,33 @@ const applyMapReverse = curry((map, key) => {
   return nextKey === undefined ? key : nextKey
 })
 
-const applyMaps = (key, maps) => {
+const applyMaps = (seed, maps) => {
   return compose(
-    applyMapReverse(maps['seed-to-soil']),
-    applyMapReverse(maps['soil-to-fertilizer']),
-    applyMapReverse(maps['fertilizer-to-water']),
-    applyMapReverse(maps['water-to-light']),
-    applyMapReverse(maps['light-to-temperature']),
-    applyMapReverse(maps['temperature-to-humidity']),
-  )(key)
-}
-
-const isSeed = (seeds, seed) => {
-  return seeds.some(x => x.start <= seed && x.end >= seed)
+    applyMap(maps['humidity-to-location']),
+    applyMap(maps['temperature-to-humidity']),
+    applyMap(maps['light-to-temperature']),
+    applyMap(maps['water-to-light']),
+    applyMap(maps['fertilizer-to-water']),
+    applyMap(maps['soil-to-fertilizer']),
+    applyMap(maps['seed-to-soil']),
+  )(seed)
 }
 
 const applySeeds = ({seeds, ...maps}) => {
   let lowest
 
-  const humidityToLocations = maps['humidity-to-location']
+  console.log('Ranges:', seeds.length)
+  for(const seedDef of seeds) {
+    console.log(seedDef)
+    for(let i = 0; i < seedDef.length; i++) {
+      const seed = seedDef.start + i
+      if(seed % 1000000 === 0) {
+        console.log(seed, '/', seedDef.start + seedDef.length - 1)
+      }
+      const value = applyMaps(seed, maps)
 
-  humidityToLocations.sort((a, b) => {
-    return a.dest.start - b.dest.start
-  })
-
-  for(const humidityToLocation of humidityToLocations) {
-    for(let location = humidityToLocation.dest.start; location <= humidityToLocation.dest.end; location++) {
-      const seed = applyMaps(location, maps)
-
-      if(isSeed(seeds, seed) && (lowest === undefined || location < lowest)) {
-        lowest = location
+      if(lowest === undefined || value < lowest) {
+        lowest = value
       }
     }
   }
@@ -75,7 +77,6 @@ const applySeeds = ({seeds, ...maps}) => {
 
 then(compose(
   report,
-  // min,
   applySeeds,
   x => set('seeds', seedListToRanges(x.seeds), x),
 ), readInput(rel(import.meta.url, 'input.txt')))
