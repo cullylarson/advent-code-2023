@@ -9,7 +9,7 @@ const applyMap = curry((map, key) => {
       return acc
     }
     else if(x.source.start <= key && x.source.end >= key) {
-      return x.destStart + key - x.source.start
+      return x.dest.start + key - x.source.start
     }
     else {
       return undefined

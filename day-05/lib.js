@@ -18,7 +18,10 @@ const parseMapLine = mapLineStr => {
       start: sourceStart,
       end: sourceStart + length - 1,
     },
-    destStart,
+    dest: {
+      start: destStart,
+      end: destStart + length - 1,
+    },
   }
 }
 
