@@ -1,28 +1,23 @@
 import {compose, report, map} from '@cullylarson/f'
 import {then} from '@cullylarson/p'
-import {readInput} from './lib.js'
+import {readInput, getNumWins} from './lib.js'
 import {rel, mult} from '../lib.js'
 
-const getNumWins = ({time, distance}) => {
-  let numWins = 0
+const listsToEntries = ([times, distances]) => {
+  if(times.length !== distances.length) throw Error("Lengths don't match.")
 
-  for(let holdTime = 1; holdTime < time; holdTime++) {
-    const speed = holdTime
-    const timeLeft = time - holdTime
+  const entries = []
 
-    const traveled = speed * timeLeft
-
-    if(traveled > distance) {
-      // console.log({speed, traveled, time, timeLeft})
-      numWins++
-    }
+  for(let i = 0; i < times.length; i++) {
+    entries.push({time: times[i], distance: distances[i]})
   }
 
-  return numWins
+  return entries
 }
 
 then(compose(
   report,
   mult,
   map(getNumWins),
+  listsToEntries,
 ), readInput(rel(import.meta.url, 'input.txt')))
