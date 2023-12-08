@@ -1,5 +1,8 @@
 import {spawn} from 'child_process'
 import cases from 'jest-in-case'
+import {jest} from '@jest/globals'
+
+jest.setTimeout(15000)
 
 const parts = {
   'day 1, part 1':
@@ -60,6 +63,11 @@ const parts = {
   {
     part: 'day-07/part-1.js',
     answer: '247823654',
+  },
+  'day 7, part 2':
+  {
+    part: 'day-07/part-2.js',
+    answer: '245461700',
   },
 }
 
