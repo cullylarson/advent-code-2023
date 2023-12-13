@@ -1,24 +1,24 @@
-import {compose, report, map, last, head} from '@cullylarson/f'
+import {compose, report, map, head} from '@cullylarson/f'
 import {then} from '@cullylarson/p'
 import {readInput, diffLineToZero} from './lib.js'
 import {rel, sum} from '../lib.js'
 
-const fillLastLineElements = (items) => {
+const fillFirstLineElements = (items) => {
   if(items.length < 2) {
     throw Error('Fewer than two items.')
   }
 
   items[items.length - 1].push(0)
 
-  let previousLastElement = 0
+  let previousFirstElement = 0
 
   for(let i = items.length - 2; i >= 0; i--) {
-    const lastElement = last(items[i])
-    const newLastElement = previousLastElement + lastElement
+    const firstElement = head(items[i])
+    const newFirstElement = firstElement - previousFirstElement
 
-    items[i].push(newLastElement)
+    items[i].unshift(newFirstElement)
 
-    previousLastElement = newLastElement
+    previousFirstElement = newFirstElement
   }
 
   return items
@@ -27,8 +27,8 @@ const fillLastLineElements = (items) => {
 then(compose(
   report,
   sum,
-  map(last),
   map(head),
-  map(fillLastLineElements),
+  map(head),
+  map(fillFirstLineElements),
   map(diffLineToZero),
 ), readInput(rel(import.meta.url, 'input.txt')))
