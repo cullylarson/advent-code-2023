@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "lint": "esw --watch --color .",
+    "watch": "esw --watch --color .",
     "test": "node --experimental-vm-modules $(npm bin)/jest ./day-01",
     "test:days": "node --experimental-vm-modules $(npm bin)/jest ./test/days.test.js"
   },
